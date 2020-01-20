@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonfify
-from flask_sqlalchemy import flask_sqlalchemy
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_marshmallow import Marshmallow
 from flask_heroku import Heroku
 import os
 
@@ -33,6 +34,31 @@ class MemeSchema(ma.Schema):
 
 meme_schema = MemeSchema()
 memes_schema = MemeSchema(many=True)
+
+@app.route("/")
+def greeting():
+  return "<h1>Meme Maker API</h1>"
+
+# POST
+@app.route("/add-meme", methods=["POST"])
+def add_meme():
+  text = request.json["text"]
+  image = request.json["image"]
+  favorite = request.json["favorite"]
+
+  new_meme = Meme(text, image, favorite)
+
+  db.session.add(new_meme)
+  db.session.commit()
+
+  return jsonify("MEME POSTED")
+
+  
+# GET
+# PUT
+# DELETE
+
+
 
 if __name__ == "__main__":
   app.debug = True
