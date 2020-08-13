@@ -52,7 +52,8 @@ def add_meme():
   db.session.add(new_meme)
   db.session.commit()
 
-  return jsonify("MEME POSTED")
+  meme = Meme.query.get(new_meme.id)
+  return meme_schema.jsonify(meme)
 
 # GET
 @app.route("/memes", methods=["GET"])
